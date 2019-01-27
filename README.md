@@ -13,9 +13,14 @@ I can create a nice API, and we'll work from there.
 
 ## Usage
 
+The methods themselves are documented, and I'll work on expanding this section later with more examples and ideas
+as I can.
+
 ```ruby
 def testing(a, b, c)
   raise 'heck' if a.is_a?(Numeric) && a > 20
+
+  d = 5 if c.is_a?(Numeric) && c > 3
 
   a + b + c
 end
@@ -42,11 +47,18 @@ testing_spy = TraceSpy::Method.new(:testing) do |spy|
   # On a return value, will yield the return to the block
   spy.on_return do |m|
     m.when(String) do |v|
-      puts "Strings in, Strings out no?: #{v}"
+      puts "Strings in, Strings out no?: #{v}. I got this in though: #{spy.current_arguments}"
     end
 
     m.when(:even?) do |v|
       puts "I got an even return: #{v}"
+    end
+  end
+
+  # On a local variable being present:
+  spy.on_locals do |m|
+    m.when(d: 5) do |v|
+      puts "I saw d was a local in here!: #{v}. I could also ask this: #{spy.current_local_variables}"
     end
   end
 end
@@ -54,19 +66,23 @@ end
 testing_spy.enable
 # => false
 
-testing(1, 2, 3)
+p testing(1, 2, 3)
 # My args were 1, 2, 3: {:a=>1, :b=>2, :c=>3}
 # I got an even return: 6
 # => 6
 
-testing(21, 2, 3)
+p testing(21, 2, 3) rescue 'nope'
 # I encountered an error: heck
-# RuntimeError: heck
-# from (pry):2:in `testing'
+# => 'nope'
 
-testing(*%w(foo bar baz))
+p testing(*%w(foo bar baz))
 # Oh hey! You called me with strings: {:a=>"foo", :b=>"bar", :c=>"baz"}
 # Strings in, Strings out no?: foobarbaz
+# => 'foobarbaz'
+
+p testing(1, 2, 4)
+# I saw d was a local in here!: {:a=>1, :b=>2, :c=>4, :d=>5}
+# => 7
 ```
 
 ## Installation

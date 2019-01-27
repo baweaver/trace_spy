@@ -63,26 +63,37 @@ testing_spy = TraceSpy::Method.new(:testing) do |spy|
   end
 end
 
-testing_spy.enable
-# => false
+# If you want to manually enable/disable the trace, use:
+#
+#   testing_spy.enable
+#   testing_spy.disable
+#
+# Otherwise, use:
 
-p testing(1, 2, 3)
-# My args were 1, 2, 3: {:a=>1, :b=>2, :c=>3}
-# I got an even return: 6
+# Outside of this block, the trace is inactive:
+testing_spy.with_tracing do
+  p testing(1, 2, 3)
+  # My args were 1, 2, 3: {:a=>1, :b=>2, :c=>3}
+  # I got an even return: 6
+  # => 6
+
+  p testing(21, 2, 3) rescue 'nope'
+  # I encountered an error: heck
+  # => 'nope'
+
+  p testing(*%w(foo bar baz))
+  # Oh hey! You called me with strings: {:a=>"foo", :b=>"bar", :c=>"baz"}
+  # Strings in, Strings out no?: foobarbaz
+  # => 'foobarbaz'
+
+  p testing(1, 2, 4)
+  # I saw d was a local in here!: {:a=>1, :b=>2, :c=>4, :d=>5}
+  # => 7
+end
+
+# Back to normal
+testing(1, 2, 3)
 # => 6
-
-p testing(21, 2, 3) rescue 'nope'
-# I encountered an error: heck
-# => 'nope'
-
-p testing(*%w(foo bar baz))
-# Oh hey! You called me with strings: {:a=>"foo", :b=>"bar", :c=>"baz"}
-# Strings in, Strings out no?: foobarbaz
-# => 'foobarbaz'
-
-p testing(1, 2, 4)
-# I saw d was a local in here!: {:a=>1, :b=>2, :c=>4, :d=>5}
-# => 7
 ```
 
 ## Installation

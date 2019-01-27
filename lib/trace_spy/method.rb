@@ -65,6 +65,37 @@ module TraceSpy
       yield(self) if block_given?
     end
 
+    # Allows to run a block of code in the context of a tracer with the
+    # convenient side-effect of not having to remember to turn it off
+    # afterwards.
+    #
+    # Tracer will only be active within the block, and will be disabled
+    # afterwards
+    #
+    # @since 0.0.3
+    #
+    # @example
+    #   The tracer will only be active within the block:
+    #
+    #   ```ruby
+    #   tracer.with_tracing do
+    #     # tasks
+    #   end
+    #   ```
+    #
+    # @param &traced_function [Proc]
+    #   Function to execute with tracing enabled
+    #
+    # @return [TrueClass]
+    #   Result of disabling the tracer
+    def with_tracing(&traced_function)
+      self.enable
+
+      yield
+
+      self.disable
+    end
+
     # Creates a Spy on function arguments
     #
     # @since 0.0.1

@@ -3,13 +3,16 @@
 TraceSpy is a wrapper around TracePoint to expose more power in matching against
 various cases of Ruby and getting value from composable traces.
 
-Right now this is super alpha and involves a lot of hackery, hence v0.0.1. I would
-suggest reading into [Qo](https://github.com/baweaver/qo) to get an idea of how the matchers
+I would suggest reading into [Qo](https://github.com/baweaver/qo) to get an idea of how the matchers
 work.
 
-**WARNING**: When I say alpha, I mean no tests currently, and the API is going to likely
-change quite a bit as I experiment with things. This is a proof-of-concept to see how
-I can create a nice API, and we'll work from there.
+## Alpha Version - What that means
+
+When I say alpha I mean the API is going to be in flux as I experiment with things. This is a proof-of-concept to demonstrate that the idea works. As I learn more about TracePoint and potential uses you may see things shifting.
+
+These will always be done with "minor" version bumps, i.e. `0.0.3 -> 0.1.0` for breaking APIs. For now, locking to static versions would be best if you intend to leverage it for more than just testing.
+
+`1.0.0` will be considered a stable API, and will come after the gem has had some time to settle.
 
 ## Usage
 
